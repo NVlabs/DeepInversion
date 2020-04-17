@@ -11,6 +11,12 @@ Other links: <br>
 
 ![Teaser](example_logs/teaser.png "Teaser")
 
+## License
+
+Copyright (C) 2020 NVIDIA Corporation. All rights reserved.
+
+This work is made available under the Nvidia Source Code License (1-Way Commercial). To view a copy of this license, visit https://nvlabs.github.io/DeepInversion/LICENSE
+
 
 ## Requirements
 
