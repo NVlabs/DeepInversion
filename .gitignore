@@ -1,0 +1,8 @@
+generation/
+temp/
+__pycache__
+.idea/
+*.tar.gz
+*.zip
+*.pkl
+*.pyc

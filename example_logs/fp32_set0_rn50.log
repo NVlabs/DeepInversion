@@ -1,0 +1,160 @@
+$ python imagenet_inversion.py --bs=84 --do_flip --exp_name="test_rn50_fp32" --r_feature=0.01 --arch_name="resnet50" --verifier --setting_id=0 --lr=0.
+2 --adi_scale=0.0 --l2=0.00001
+Namespace(adi_scale=0.0, arch_name='resnet50', bs=84, comment='', do_flip=True, epochs=20000, exp_name='test_rn50_fp32', fp16=False, jitter=30, l2=1e-05, local_rank=0, lr=0.2, main_loss_multiplier=1.0, no_cuda=False, r_feature=0.01, random_label=False, setting_id=0, t
+v_l1=0.0, tv_l2=0.0001, verifier=True, verifier_arch='mobilenet_v2', wd=0.01, worldsize=1)
+loading torchvision model for inversion with the name: resnet50
+==> Resuming from checkpoint..
+==> Getting BN params as feature statistics
+loading verifier:  mobilenet_v2
+Deep inversion class generation
+get_images call
+------------iteration 100----------
+total loss 1.7325098514556885
+loss_r_feature 90.60043334960938
+main criterion 0.22487393021583557
+Verifier accuracy:  1.1904761791229248
+------------iteration 200----------
+total loss 1.3570595979690552
+loss_r_feature 73.92747497558594
+main criterion 0.08076667785644531
+Verifier accuracy:  5.952381134033203
+------------iteration 300----------
+total loss 1.192380666732788
+loss_r_feature 66.64324951171875
+main criterion 0.04419786483049393
+Verifier accuracy:  4.761904716491699                                                                                                                                                                                                                                [68/4971]
+------------iteration 400----------
+total loss 1.1331039667129517
+loss_r_feature 63.37013244628906
+main criterion 0.027310485020279884
+Verifier accuracy:  15.476190567016602
+------------iteration 500----------
+total loss 1.0495476722717285
+loss_r_feature 58.564552307128906
+main criterion 0.004942258354276419
+Verifier accuracy:  13.095237731933594
+------------iteration 600----------
+total loss 1.05406653881073
+loss_r_feature 57.1053466796875
+main criterion 0.02717919647693634
+Verifier accuracy:  15.476190567016602
+------------iteration 700----------
+total loss 0.8731762170791626
+loss_r_feature 48.39915466308594
+main criterion 0.0029847281984984875
+Verifier accuracy:  11.904762268066406
+------------iteration 800----------
+total loss 0.8121204376220703
+loss_r_feature 44.756126403808594
+main criterion 0.0013222013367339969
+Verifier accuracy:  13.095237731933594
+------------iteration 900----------
+total loss 0.7302803993225098
+loss_r_feature 39.77760314941406
+main criterion 0.00771959638223052
+Verifier accuracy:  15.476190567016602
+------------iteration 1000----------
+total loss 0.6622204184532166
+loss_r_feature 35.62640380859375
+main criterion 0.0059319790452718735
+Verifier accuracy:  21.428571701049805
+------------iteration 1100----------
+total loss 0.5391901731491089
+loss_r_feature 28.116008758544922
+main criterion 0.0015326568391174078
+Verifier accuracy:  23.809524536132812
+------------iteration 1200----------
+total loss 0.5046427845954895
+loss_r_feature 26.73769187927246
+main criterion 0.001567840576171875
+Verifier accuracy:  21.428571701049805
+------------iteration 1300----------
+total loss 0.45175373554229736
+loss_r_feature 23.481212615966797
+main criterion 0.0010218393290415406
+Verifier accuracy:  16.66666603088379
+------------iteration 1400----------
+total loss 0.3774851858615875
+loss_r_feature 18.778751373291016
+main criterion 0.0009181839996017516
+Verifier accuracy:  28.571428298950195
+------------iteration 1500----------
+total loss 0.3348837196826935
+loss_r_feature 16.353933334350586
+main criterion 0.0006400971324183047
+Verifier accuracy:  26.190475463867188
+------------iteration 1600----------
+total loss 0.29075923562049866
+loss_r_feature 13.699808120727539
+main criterion 0.0005158697022125125
+Verifier accuracy:  32.14285659790039
+------------iteration 1700----------
+total loss 0.280352383852005
+loss_r_feature 13.329302787780762
+main criterion 0.0007046745158731937
+Verifier accuracy:  26.190475463867188
+------------iteration 1800----------
+total loss 0.26061105728149414
+loss_r_feature 11.900742530822754
+main criterion 0.0009304682607762516
+Verifier accuracy:  25.0
+------------iteration 1900----------
+total loss 0.2539810240268707
+loss_r_feature 11.516486167907715
+main criterion 0.0013499259948730469
+Verifier accuracy:  27.380952835083008
+------------iteration 2000----------
+total loss 0.25407370924949646
+loss_r_feature 11.625514030456543
+main criterion 0.0009400731069035828
+Verifier accuracy:  27.380952835083008
+------------iteration 2100----------
+total loss 1.186625361442566
+loss_r_feature 43.52707290649414
+main criterion 0.008745352737605572
+Verifier accuracy:  51.19047546386719
+------------iteration 2200----------
+total loss 1.031857967376709
+loss_r_feature 35.6275749206543
+main criterion 0.0017157054971903563
+Verifier accuracy:  73.80952453613281
+------------iteration 2300----------
+total loss 0.8248406648635864
+loss_r_feature 30.27305030822754
+main criterion 0.001007091486826539
+Verifier accuracy:  85.71428680419922
+------------iteration 2400----------
+total loss 0.8060064315795898
+loss_r_feature 28.234004974365234
+main criterion 0.0011983144795522094
+Verifier accuracy:  86.9047622680664
+------------iteration 2500----------
+total loss 0.7223383188247681
+loss_r_feature 25.458057403564453
+main criterion 0.001484291860833764
+Verifier accuracy:  90.47618865966797
+------------iteration 2600----------
+total loss 0.5898433923721313
+loss_r_feature 20.13226890563965
+main criterion 0.0014175687683746219
+Verifier accuracy:  91.66666412353516
+------------iteration 2700----------
+total loss 0.5021806955337524
+loss_r_feature 16.399860382080078
+main criterion 0.0010060241911560297
+Verifier accuracy:  96.42857360839844
+------------iteration 2800----------
+total loss 0.420066237449646
+loss_r_feature 13.413532257080078
+main criterion 0.000963824160862714
+Verifier accuracy:  92.85713958740234
+------------iteration 2900----------
+total loss 0.3616832494735718
+loss_r_feature 10.820902824401855
+main criterion 0.0006766319274902344
+Verifier accuracy:  95.23809814453125
+------------iteration 3000----------
+total loss 0.3493320047855377
+loss_r_feature 10.420402526855469
+main criterion 0.0005601133452728391
+Verifier accuracy:  96.42857360839844

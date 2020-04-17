@@ -1,0 +1,147 @@
+$ python imagenet_inversion.py --bs=84 --do_flip --exp_name="test_rn50_fp16_set1" --r_feature=0.01 --arch_name="resnet50" --verifier --setting_id=1 --lr=0.2 --adi_scale=0.0 --l2=0.00001 --fp16
+Namespace(adi_scale=0.0, arch_name='resnet50', bs=84, comment='', do_flip=True, epochs=20000, exp_name='test_rn50_fp16_set1', fp16=True, jitter=30, l2=1e-05, local_rank=0, lr=0.2, main_loss_multiplier=1.0, no_cuda=False, r_feature=0.01, random_label=False, setting_id=1, tv_l1=0.0, tv_l2=0.0001, verifier=True, verifier_arch='mobilenet_v2', wd=0.01, worldsize=1)
+loading torchvision model for inversion with the name: resnet50
+Selected optimization level O2:  FP16 training with FP32 batchnorm and FP32 master weights.
+
+Defaults for this optimization level are:
+enabled                : True
+opt_level              : O2
+cast_model_type        : torch.float16
+patch_torch_functions  : False
+keep_batchnorm_fp32    : True
+master_weights         : True
+loss_scale             : dynamic
+Processing user overrides (additional kwargs that are not None)...
+After processing overrides, optimization options are:
+enabled                : True
+opt_level              : O2
+cast_model_type        : torch.float16
+patch_torch_functions  : False
+keep_batchnorm_fp32    : True
+master_weights         : True
+loss_scale             : dynamic
+==> Resuming from checkpoint..
+==> Getting BN params as feature statistics
+loading verifier:  mobilenet_v2
+Deep inversion class generation
+get_images call
+Selected optimization level O2:  FP16 training with FP32 batchnorm and FP32 master weights.
+
+Defaults for this optimization level are:
+enabled                : True
+opt_level              : O2
+cast_model_type        : torch.float16
+patch_torch_functions  : False
+keep_batchnorm_fp32    : True
+master_weights         : True
+loss_scale             : dynamic
+Processing user overrides (additional kwargs that are not None)...
+After processing overrides, optimization options are:
+enabled                : True
+opt_level              : O2
+cast_model_type        : torch.float16
+patch_torch_functions  : False
+keep_batchnorm_fp32    : True
+master_weights         : True
+loss_scale             : dynamic
+Gradient overflow.  Skipping step, loss scaler 0 reducing loss scale to 32768.0
+------------iteration 100----------
+total loss 1.8805938959121704
+loss_r_feature 76.06755828857422
+main criterion 0.006961311679333448
+Verifier accuracy:  7.142857074737549
+------------iteration 200----------
+total loss 1.3011034727096558
+loss_r_feature 58.76356887817383
+main criterion 0.0030642691999673843
+Verifier accuracy:  40.47618865966797
+------------iteration 300----------
+total loss 1.096110224723816
+loss_r_feature 50.20344924926758
+main criterion 0.0015656152972951531
+Verifier accuracy:  76.19047546386719
+------------iteration 400----------
+total loss 1.0675420761108398
+loss_r_feature 46.52493667602539
+main criterion 0.0015199638437479734
+Verifier accuracy:  67.85713958740234
+------------iteration 500----------
+total loss 1.0750524997711182
+loss_r_feature 42.88349533081055
+main criterion 0.001011076383292675
+Verifier accuracy:  70.23809814453125
+------------iteration 600----------
+total loss 0.9664787650108337
+loss_r_feature 38.243465423583984
+main criterion 0.001509393914602697
+Verifier accuracy:  63.095237731933594
+------------iteration 700----------
+total loss 0.9061623811721802
+loss_r_feature 36.1928825378418
+main criterion 0.002603746484965086
+Verifier accuracy:  64.28571319580078
+------------iteration 800----------
+total loss 0.8216720223426819
+loss_r_feature 32.11809539794922
+main criterion 0.0023030894808471203
+Verifier accuracy:  75.0
+------------iteration 900----------
+total loss 0.9163199067115784
+loss_r_feature 36.28833770751953
+main criterion 0.05596952140331268
+Verifier accuracy:  72.61904907226562
+------------iteration 1000----------
+total loss 0.7641246318817139
+loss_r_feature 30.2562313079834
+main criterion 0.0017005829140543938
+Verifier accuracy:  82.14285278320312
+------------iteration 1100----------
+total loss 0.7134910225868225
+loss_r_feature 27.443801879882812
+main criterion 0.0016521726502105594
+Verifier accuracy:  84.52381134033203
+------------iteration 1200----------
+total loss 0.6644324064254761
+loss_r_feature 25.020050048828125
+main criterion 0.002477305242791772
+Verifier accuracy:  85.71428680419922
+------------iteration 1300----------
+total loss 0.6082080006599426
+loss_r_feature 23.141693115234375
+main criterion 0.0009327275329269469
+Verifier accuracy:  91.66666412353516
+------------iteration 1400----------
+total loss 0.5574465394020081
+loss_r_feature 21.793500900268555
+main criterion 0.0010219528339803219
+Verifier accuracy:  95.23809814453125
+------------iteration 1500----------
+total loss 0.5180432796478271
+loss_r_feature 20.062559127807617
+main criterion 0.0009084542398341
+Verifier accuracy:  94.04761505126953
+------------iteration 1600----------
+total loss 0.46451741456985474
+loss_r_feature 17.89577865600586
+main criterion 0.0005521774291992188
+Verifier accuracy:  97.61904907226562
+------------iteration 1700----------
+total loss 0.42708495259284973
+loss_r_feature 17.111621856689453
+main criterion 0.0005137125845067203
+Verifier accuracy:  96.42857360839844
+------------iteration 1800----------
+total loss 0.3998515009880066
+loss_r_feature 16.164155960083008
+main criterion 0.00046278181253001094
+Verifier accuracy:  96.42857360839844
+------------iteration 1900----------
+total loss 0.39311376214027405
+loss_r_feature 16.403812408447266
+main criterion 0.0006096022552810609
+Verifier accuracy:  96.42857360839844
+------------iteration 2000----------
+total loss 0.390480101108551
+loss_r_feature 16.30877113342285
+main criterion 0.0006353174103423953
+Verifier accuracy:  96.42857360839844
