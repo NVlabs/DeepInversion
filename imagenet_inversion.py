@@ -153,7 +153,7 @@ def run(args):
 
     parameters["do_flip"] = args.do_flip
     parameters["random_label"] = args.random_label
-    parameters["store_best_images"] = self.store_best_images
+    parameters["store_best_images"] = args.store_best_images
 
     criterion = nn.CrossEntropyLoss()
 
