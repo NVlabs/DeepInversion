@@ -208,7 +208,7 @@ def main():
     parser.add_argument('--do_flip', action='store_true', help='apply flip during model inversion')
     parser.add_argument('--random_label', action='store_true', help='generate random label for optimization')
     parser.add_argument('--r_feature', type=float, default=0.05, help='coefficient for feature distribution regularization')
-    parser.add_argument('--first_bn_multiplier', type=float, default=10., help='additional multiplier on first bn layer R_feature')
+    parser.add_argument('--first_bn_multiplier', type=float, default=10., help='additional multiplier on first bn layer of R_feature')
     parser.add_argument('--tv_l1', type=float, default=0.0, help='coefficient for total variation L1 loss')
     parser.add_argument('--tv_l2', type=float, default=0.0001, help='coefficient for total variation L2 loss')
     parser.add_argument('--lr', type=float, default=0.2, help='learning rate for optimization')

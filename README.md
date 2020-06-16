@@ -58,7 +58,7 @@ Useful to observe generalizability of generated images.
 - `adi_scale` - competition coefficient. With positive value will lead to images that are good for the original model, but bad for verifier. Value 0.2 was used in the paper.
 - `random_label` - randomly select classes for inversion. Without this argument the code will generate hand picked classes.
 
-After 3k iterations (~6 mins on NVIDIA V100) generation is done: `Verifier accuracy:  91.6...%`. We generated images by inverting vanilla ResNet50 (not trained for image generation) and classification accuracy by MobileNetv2 is >90%. A grid of images look like (from `/final_images/`, reduced quality due to JPEG compression. )
+After 3k iterations (~6 mins on NVIDIA V100) generation is done: `Verifier accuracy:  91.6...%` (experiment with >98% verifier accuracy can be found `/example_logs`). We generated images by inverting vanilla ResNet50 (not trained for image generation) and classification accuracy by MobileNetv2 is >90%. A grid of images look like (from `/final_images/`, reduced quality due to JPEG compression. )
 ![Generated grid of images](example_logs/fp32_set0_rn50_first_bn_scaled.jpg "ResNet50 Inverted images")
 
 Optimization is sensitive to hyper-parameters. Try local tunings for your setups/applications. Try to change the r_feature coefficient, l2 regularization, betas of Adam optimizer (beta=0 work well). Keep looking at `loss_r_feature` as it indicates how close feature statistics are to the training distribution.
