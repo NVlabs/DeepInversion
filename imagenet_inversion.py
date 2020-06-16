@@ -1,7 +1,10 @@
 # --------------------------------------------------------
 # Copyright (C) 2020 NVIDIA Corporation. All rights reserved.
 # Nvidia Source Code License-NC
-# Code written by Pavlo Molchanov and Hongxu Yin
+# Official PyTorch implementation of CVPR2020 paper
+# Dreaming to Distill: Data-free Knowledge Transfer via DeepInversion
+# Hongxu Yin, Pavlo Molchanov, Zhizhong Li, Jose M. Alvarez, Arun Mallya, Derek
+# Hoiem, Niraj K. Jha, and Jan Kautz
 # --------------------------------------------------------
 
 from __future__ import division, print_function
@@ -10,27 +13,19 @@ from __future__ import division
 from __future__ import unicode_literals
 
 import argparse
-
 import torch
 from torch import distributed, nn
-
 import random
 import torch.nn as nn
 import torch.nn.parallel
 import torch.utils.data
-
 from torchvision import datasets, transforms
 
 import numpy as np
-
 from apex import amp
-
 import os
-
 import torchvision.models as models
 from utils.utils import load_model_pytorch, distributed_is_initialized
-
-
 
 random.seed(0)
 
@@ -62,7 +57,6 @@ def validate_one(input, target, model):
 
 def run(args):
     torch.manual_seed(args.local_rank)
-
     device = torch.device('cuda' if torch.cuda.is_available() and not args.no_cuda else 'cpu')
 
     if args.arch_name == "resnet50v15":
@@ -97,7 +91,6 @@ def run(args):
                 feature_statistics.append((std, mean))
 
     net.to(device)
-
     net.eval()
 
     # reserved to compute test accuracy on generated images by different networks
@@ -159,13 +152,13 @@ def run(args):
 
     coefficients = dict()
     coefficients["r_feature"] = args.r_feature
+    coefficients["first_bn_multiplier"] = args.first_bn_multiplier
     coefficients["tv_l1"] = args.tv_l1
     coefficients["tv_l2"] = args.tv_l2
     coefficients["l2"] = args.l2
     coefficients["lr"] = args.lr
     coefficients["main_loss_multiplier"] = args.main_loss_multiplier
     coefficients["adi_scale"] = args.adi_scale
-
 
     network_output_function = lambda x: x
 
@@ -215,6 +208,7 @@ def main():
     parser.add_argument('--do_flip', action='store_true', help='apply flip during model inversion')
     parser.add_argument('--random_label', action='store_true', help='generate random label for optimization')
     parser.add_argument('--r_feature', type=float, default=0.05, help='coefficient for feature distribution regularization')
+    parser.add_argument('--first_bn_multiplier', type=float, default=10., help='additional multiplier on first bn layer R_feature')
     parser.add_argument('--tv_l1', type=float, default=0.0, help='coefficient for total variation L1 loss')
     parser.add_argument('--tv_l2', type=float, default=0.0001, help='coefficient for total variation L2 loss')
     parser.add_argument('--lr', type=float, default=0.2, help='learning rate for optimization')
@@ -222,16 +216,12 @@ def main():
     parser.add_argument('--main_loss_multiplier', type=float, default=1.0, help='coefficient for the main loss in optimization')
     parser.add_argument('--store_best_images', action='store_true', help='save best images as separate files')
 
-
     args = parser.parse_args()
-
     print(args)
 
     torch.backends.cudnn.benchmark = True
-
     run(args)
 
 
 if __name__ == '__main__':
     main()
-

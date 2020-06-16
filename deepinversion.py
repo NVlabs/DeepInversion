@@ -1,8 +1,16 @@
 # --------------------------------------------------------
 # Copyright (C) 2020 NVIDIA Corporation. All rights reserved.
 # Nvidia Source Code License-NC
-# Code written by Pavlo Molchanov and Hongxu Yin
+# Official PyTorch implementation of CVPR2020 paper
+# Dreaming to Distill: Data-free Knowledge Transfer via DeepInversion
+# Hongxu Yin, Pavlo Molchanov, Zhizhong Li, Jose M. Alvarez, Arun Mallya, Derek
+# Hoiem, Niraj K. Jha, and Jan Kautz
 # --------------------------------------------------------
+
+from __future__ import division, print_function
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import unicode_literals
 
 import torch
 import torch.nn as nn
@@ -13,10 +21,10 @@ import random
 import torch
 import torchvision.utils as vutils
 from PIL import Image
-
 import numpy as np
 
 from utils.utils import lr_cosine_policy, lr_policy, beta_policy, mom_cosine_policy, clip, denormalize, create_folder
+
 
 class DeepInversionFeatureHook():
     '''
@@ -95,11 +103,8 @@ class DeepInversionClass(object):
             "lr" - learning rate for optimization
             "main_loss_multiplier" - coefficient for the main loss optimization
             "adi_scale" - coefficient for Adaptive DeepInversion, competition, def =0 means no competition
-
         network_output_function: function to be applied to the output of the network to get the output
-
         hook_for_display: function to be executed at every print/save call, useful to check accuracy of verifier
-
         '''
 
         print("Deep inversion class generation")
@@ -124,21 +129,17 @@ class DeepInversionClass(object):
             self.store_best_images = False
 
         self.setting_id = setting_id
-
         self.bs = bs  # batch size
         self.use_fp16 = use_fp16
-
         self.save_every = 100
-
         self.jitter = jitter
         self.criterion = criterion
-
         self.network_output_function = network_output_function
-
         do_clip = True
 
         if "r_feature" in coefficients:
             self.bn_reg_scale = coefficients["r_feature"]
+            self.first_bn_multiplier = coefficients["first_bn_multiplier"]
             self.var_scale_l1 = coefficients["tv_l1"]
             self.var_scale_l2 = coefficients["tv_l2"]
             self.l2_scale = coefficients["l2"]
@@ -149,7 +150,6 @@ class DeepInversionClass(object):
             print("Provide a dictionary with ")
 
         self.num_generations = 0
-
         self.final_data_path = final_data_path
 
         ## Create folders for images and logs
@@ -180,16 +180,12 @@ class DeepInversionClass(object):
         print("get_images call")
 
         net_teacher = self.net_teacher
-
         use_fp16 = self.use_fp16
         save_every = self.save_every
 
         kl_loss = nn.KLDivLoss(reduction='batchmean').cuda()
-
         local_rank = torch.cuda.current_device()
-
         best_cost = 1e4
-
         criterion = self.criterion
 
         # setup target labels
@@ -202,6 +198,7 @@ class DeepInversionClass(object):
                            311,
                            325, 340, 360, 386, 402, 403, 409, 530, 440, 468, 417, 590, 670, 817, 762, 920, 949, 963,
                            967, 574, 487]
+
                 targets = torch.LongTensor(targets * (int(self.bs / len(targets)))).to('cuda')
 
         img_original = self.image_resolution
@@ -209,7 +206,6 @@ class DeepInversionClass(object):
         data_type = torch.half if use_fp16 else torch.float
         inputs = torch.randn((self.bs, 3, img_original, img_original), requires_grad=True, device='cuda',
                              dtype=data_type)
-
         pooling_function = nn.modules.pooling.AvgPool2d(kernel_size=2)
 
         if self.setting_id==0:
@@ -253,7 +249,6 @@ class DeepInversionClass(object):
 
             for iteration_loc in range(iterations_per_layer):
                 iteration += 1
-
                 # learning rate scheduling
                 lr_scheduler(optimizer, iteration_loc, iteration_loc)
 
@@ -287,7 +282,8 @@ class DeepInversionClass(object):
                 loss_var_l1, loss_var_l2 = get_image_prior_losses(inputs_jit)
 
                 # R_feature loss
-                loss_r_feature = sum([mod.r_feature for mod in self.loss_r_feature_layers])
+                rescale = [self.first_bn_multiplier] + [1. for _ in range(len(self.loss_r_feature_layers)-1)]
+                loss_r_feature = sum([mod.r_feature * rescale[idx] for (idx, mod) in enumerate(self.loss_r_feature_layers)])
 
                 # R_ADI
                 loss_verifier_cig = torch.zeros(1)
@@ -320,7 +316,6 @@ class DeepInversionClass(object):
 
                 # l2 loss on images
                 loss_l2 = torch.norm(inputs_jit.view(self.bs, -1), dim=1).mean()
-
 
                 # combining losses
                 loss_aux = self.var_scale_l2 * loss_var_l2 + \
@@ -389,6 +384,7 @@ class DeepInversionClass(object):
                 place_to_store = '{}/img_s{:03d}_{:05d}_id{:03d}_gpu_{}_2.jpg'.format(self.final_data_path, class_id,
                                                                                           self.num_generations, id,
                                                                                           local_rank)
+
             image_np = images[id].data.cpu().numpy().transpose((1, 2, 0))
             pil_image = Image.fromarray((image_np * 255).astype(np.uint8))
             pil_image.save(place_to_store)
