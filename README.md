@@ -18,6 +18,10 @@ Copyright (C) 2020 NVIDIA Corporation. All rights reserved.
 
 This work is made available under the Nvidia Source Code License (1-Way Commercial). To view a copy of this license, visit https://github.com/NVlabs/DeepInversion/blob/master/LICENSE
 
+## Updates
+
+- 2020 July 7. Added CIFAR10 inversion result for ResNet34 in the folder cifar10. Code on knowledge distillation will follow soon.
+
 
 ## Requirements
 
