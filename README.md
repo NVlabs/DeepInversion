@@ -6,9 +6,9 @@ This repository is the official PyTorch implementation of [Dreaming to Distill: 
 The code will help to invert images from models of torchvision (pretrained on ImageNet), and run the images over another model to check generalization. We plan to update repo with CIFAR10 examples and teacher-student training.
 
 Useful links: <br>
-[[CVPR2020 Camera Ready PDF]](https://drive.google.com/file/d/1jg4o458y70aCqUPRklMEy6dOGlZ0qMde/view?usp=sharing) <br>
-[[ArXiv PDF]](https://arxiv.org/pdf/1912.08795.pdf)<br>
-[[Inverted Images on ImageNet]](https://drive.google.com/open?id=1AXCW6_E_Qtr5qyb9jygGaLub13gQo10c): from ResNet50v1.5, ~2GB, organized by classes, ~140k images. Were used in Section 4.4 (Data-free Knowledge Transfer), best viewed in gThumb.
+* [Camera Ready PDF](https://drive.google.com/file/d/1jg4o458y70aCqUPRklMEy6dOGlZ0qMde/view?usp=sharing) <br>
+* [ArXiv Full](https://arxiv.org/pdf/1912.08795.pdf)<br>
+* [Dataset - Synthesized ImageNet](https://drive.google.com/open?id=1AXCW6_E_Qtr5qyb9jygGaLub13gQo10c): from ResNet50v1.5, ~2GB, organized by classes, ~140k images. Were used in Section 4.4 (Data-free Knowledge Transfer), best viewed in gThumb.
 
 ![Teaser](example_logs/teaser.png "Teaser")
 
@@ -21,7 +21,7 @@ This work is made available under the Nvidia Source Code License (1-Way Commerci
 ## Updates
 
 - 2020 July 7. Added CIFAR10 inversion result for ResNet34 in the folder cifar10. Code on knowledge distillation will follow soon.
-
+- 2020 June 16. Added a new scaling factor `first_bn_multiplier` for first BN layer. This improves fidelity.
 
 ## Requirements
 
