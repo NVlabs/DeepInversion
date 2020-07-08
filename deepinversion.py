@@ -354,6 +354,7 @@ class DeepInversionClass(object):
 
                 if best_cost > loss.item() or iteration == 1:
                     best_inputs = inputs.data.clone()
+                    best_cost = loss.item()
 
                 if iteration % save_every==0 and (save_every > 0):
                     if local_rank==0:

@@ -79,17 +79,6 @@ def run(args):
         path_to_model = "./models/resnet50v15/model_best.pth.tar"
         load_model_pytorch(net, path_to_model, gpu_n=torch.cuda.current_device())
 
-    ### load feature statistics
-    print('==> Getting BN params as feature statistics')
-    feature_statistics = list()
-    for module in net.modules():
-        if isinstance(module, nn.BatchNorm2d):
-            mean, std = module.running_mean.data, module.running_var.data
-            if use_fp16:
-                feature_statistics.append((std.type(torch.float16), mean.type(torch.float16)))
-            else:
-                feature_statistics.append((std, mean))
-
     net.to(device)
     net.eval()
 
