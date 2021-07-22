@@ -22,7 +22,7 @@ import torch.utils.data
 from torchvision import datasets, transforms
 
 import numpy as np
-from apex import amp
+import torch.cuda.amp as amp
 import os
 import torchvision.models as models
 from utils.utils import load_model_pytorch, distributed_is_initialized
