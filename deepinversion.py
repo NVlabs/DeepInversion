@@ -16,7 +16,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 import collections
-from apex import amp
+import torch.cuda.amp as amp
 import random
 import torch
 import torchvision.utils as vutils

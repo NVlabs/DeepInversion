@@ -22,7 +22,7 @@ import torch.utils.data
 from torchvision import datasets, transforms
 
 import numpy as np
-from apex import amp
+import torch.cuda.amp as amp
 import os
 import torchvision.models as models
 from utils.utils import load_model_pytorch, distributed_is_initialized
@@ -44,7 +44,7 @@ def validate_one(input, target, model):
 
         res = []
         for k in topk:
-            correct_k = correct[:k].view(-1).float().sum(0)
+            correct_k = correct[:k].reshape(-1).float().sum(0)
             res.append(correct_k.mul_(100.0 / batch_size))
         return res
 
