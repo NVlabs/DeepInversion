@@ -98,7 +98,7 @@ class DeepInversionClass(object):
             keys:
             "r_feature" - coefficient for feature distribution regularization
             "tv_l1" - coefficient for total variation L1 loss
-            "tv_l2" - coefficient for total variation L1 loss
+            "tv_l2" - coefficient for total variation L2 loss
             "l2" - l2 penalization weight
             "lr" - learning rate for optimization
             "main_loss_multiplier" - coefficient for the main loss optimization
