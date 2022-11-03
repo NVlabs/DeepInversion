@@ -45,7 +45,7 @@ Code was tested on NVIDIA V100 GPU and Titan X Pascal.
 
 This snippet will generate 84 images by inverting resnet50 model from torchvision package.
 
-`python imagenet_inversion.py --bs=84 --do_flip --exp_name="rn50_inversion" --r_feature=0.01 --arch_name="resnet50" --verifier --adi_scale=0.0 --setting_id=0 --lr 0.25`
+`python imagenet_inversion.py --bs=84 --do_flip --exp_name="rn50_inversion" --r_feature=0.01 --arch_name="resnet50" --verifier --adi_scale=0.0 --setting_id=0 --lr 0.25 --gpu_ids 0`
 
 Arguments:
 
@@ -61,6 +61,7 @@ Useful to observe generalizability of generated images.
 - `setting_id` - settings for optimization: 0 - multi resolution scheme, 1 - 2k iterations full resolution, 2 - 20k iterations (the closes to ResNet50 experiments in the paper). Recommended to use setting_id={0, 1}
 - `adi_scale` - competition coefficient. With positive value will lead to images that are good for the original model, but bad for verifier. Value 0.2 was used in the paper.
 - `random_label` - randomly select classes for inversion. Without this argument the code will generate hand picked classes.
+- `gpu_ids` - device ids for using single/multi-gpu training.
 
 After 3k iterations (~6 mins on NVIDIA V100) generation is done: `Verifier accuracy:  91.6...%` (experiment with >98% verifier accuracy can be found `/example_logs`). We generated images by inverting vanilla ResNet50 (not trained for image generation) and classification accuracy by MobileNetv2 is >90%. A grid of images look like (from `/final_images/`, reduced quality due to JPEG compression. )
 ![Generated grid of images](example_logs/fp32_set0_rn50_first_bn_scaled.jpg "ResNet50 Inverted images")
