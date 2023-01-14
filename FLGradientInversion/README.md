@@ -1,6 +1,7 @@
-# Gradient Inversion
+# FL Gradient Inversion
 
-This directory contains the tools necessary to recreate the experiments listed in 
+This directory contains the tools necessary to recreate the chest X-ray 
+experiments described in 
 
 
 ### Do Gradient Inversion Attacks Make Federated Learning Unsafe? [arXiv:2202.06924](https://arxiv.org/abs/2202.06924)
