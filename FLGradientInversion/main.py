@@ -9,9 +9,9 @@ from copy import deepcopy
 import numpy as np
 import torch
 import torch.utils.data
-from torchvision_class import TorchVisionClassificationModel
 
 from fl_gradient_inversion import FLGradientInversion
+from torchvision_class import TorchVisionClassificationModel
 
 
 def run(cfg):
@@ -87,14 +87,11 @@ def run(cfg):
             f"Using full BN stats from {batchnorm_file} "
             f"with momentum {bn_momentum} ! \n"
         )
-        bn_stats = np.load(batchnorm_file, allow_pickle=True)[
-            "batchnorm"
-        ].item()
+        bn_stats = np.load(batchnorm_file, allow_pickle=True)["batchnorm"].item()
         for n in bn_stats.keys():
             if "running" in n:
                 xt = (
-                    bn_stats[n]
-                    - (1 - bn_momentum) * global_state_dict[n].numpy()
+                    bn_stats[n] - (1 - bn_momentum) * global_state_dict[n].numpy()
                 ) / bn_momentum
                 n_bn_updated += 1
                 bn_stats[n] = xt

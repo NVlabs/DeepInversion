@@ -172,9 +172,7 @@ class FLGradientInversion(object):
                 betas=[0.9, 0.9],
                 eps=1e-8,
             )
-            lr_scheduler = self.lr_cosine_policy(
-                cfg["lr"], 100, iterations_per_layer
-            )
+            lr_scheduler = self.lr_cosine_policy(cfg["lr"], 100, iterations_per_layer)
             local_trainer = self.create_trainer(
                 cfg=cfg,
                 network=network,
@@ -242,11 +240,11 @@ class FLGradientInversion(object):
                 optimizer.step()
                 if local_rank == 0:
                     if iteration % save_every == 0:
-                        self.logger.info(
-                            f"------------iteration {iteration}----------"
-                        )
+                        self.logger.info(f"------------iteration {iteration}----------")
                         self.logger.info(f"total loss {loss.item()}")
-                        self.logger.info(f"mean targets {torch.mean(targets_in, 0).detach().cpu().numpy()}")
+                        self.logger.info(
+                            f"mean targets {torch.mean(targets_in, 0).detach().cpu().numpy()}"
+                        )
                         self.logger.info(f"gradient loss {loss_grad.item()}")
                         self.logger.info(f"bn matching loss {loss_bn.item()}")
                         self.logger.info(
@@ -266,9 +264,7 @@ class FLGradientInversion(object):
                         nrow=int(int(cfg["local_num_images"]) ** 0.5),
                     )
                 if cfg["energy_l2"] > 0.0:
-                    inputs_noise_add = torch.randn(
-                        inputs.size(), device=device
-                    )
+                    inputs_noise_add = torch.randn(inputs.size(), device=device)
                     for param_group in optimizer.param_groups:
                         current_lr = param_group["lr"]
                         break
@@ -282,9 +278,7 @@ class FLGradientInversion(object):
                     inputs.data = inputs.data + inputs_noise_add * std
 
         if save_every > 0:
-            self.save_results(
-                images=best_inputs, targets=targets_in, name="recon"
-            )
+            self.save_results(images=best_inputs, targets=targets_in, name="recon")
 
         optimizer.state = collections.defaultdict(dict)
 
@@ -318,9 +312,7 @@ class FLGradientInversion(object):
             targets = torch.sigmoid(targets)
         data = []
         for i in range(cfg["local_num_images"]):
-            data.append(
-                {Keys.IMAGE: inputs[i, ...], Keys.LABEL: targets[i, ...]}
-            )
+            data.append({Keys.IMAGE: inputs[i, ...], Keys.LABEL: targets[i, ...]})
         trainer.data_loader = DataLoader([data], batch_size=cfg["local_bs"])
         if cfg["local_optim"] == "sgd":
             optimizer = torch.optim.SGD(network.parameters(), cfg["lr_local"])
@@ -328,8 +320,7 @@ class FLGradientInversion(object):
             optimizer = torch.optim.Adam(network.parameters(), cfg["lr_local"])
         else:
             raise ValueError(
-                f"Local optimizer {cfg['local_optim']} "
-                f"is not currently supported !"
+                f"Local optimizer {cfg['local_optim']} " f"is not currently supported !"
             )
         trainer.optimizer.load_state_dict(optimizer.state_dict())
         trainer.optimizer.zero_grad()
@@ -348,9 +339,7 @@ class FLGradientInversion(object):
 
         data = []
         for i in range(cfg["local_num_images"]):
-            data.append(
-                {Keys.IMAGE: inputs[i, ...], Keys.LABEL: targets[i, ...]}
-            )
+            data.append({Keys.IMAGE: inputs[i, ...], Keys.LABEL: targets[i, ...]})
         loader = DataLoader([data], batch_size=cfg["local_bs"])
         if cfg["local_optim"] == "sgd":
             optimizer = torch.optim.SGD(network.parameters(), cfg["lr_local"])
@@ -408,9 +397,7 @@ class FLGradientInversion(object):
             m, s = mean[c], std[c]
 
             if len(image_tensor.shape) == 4:
-                image_tensor[:, c] = torch.clamp(
-                    image_tensor[:, c] * s + m, 0, 1
-                )
+                image_tensor[:, c] = torch.clamp(image_tensor[:, c] * s + m, 0, 1)
 
             elif len(image_tensor.shape) == 3:
                 image_tensor[c] = torch.clamp(image_tensor[c] * s + m, 0, 1)
@@ -530,9 +517,7 @@ class InversionSupervisedTrainer(SupervisedTrainer):
         """
         if batchdata is None:
             raise ValueError("Must provide batch data for current iteration.")
-        batch = self.prepare_batch(
-            batchdata, engine.state.device, engine.non_blocking
-        )
+        batch = self.prepare_batch(batchdata, engine.state.device, engine.non_blocking)
         if len(batch) == 2:
             inputs, targets = batch
             args: Tuple = ()
@@ -602,9 +587,19 @@ class DeepInversionFeatureHook:
             mean_feature = torch.norm(module.running_mean.data - mean, 2)
         else:
             var_feature = torch.norm(
-                torch.tensor(self.bn_stats[self.name + ".running_var"], device=input[0].device) - var, 2)
+                torch.tensor(
+                    self.bn_stats[self.name + ".running_var"], device=input[0].device
+                )
+                - var,
+                2,
+            )
             mean_feature = torch.norm(
-                torch.tensor(self.bn_stats[self.name + ".running_mean"], device=input[0].device) - mean, 2)
+                torch.tensor(
+                    self.bn_stats[self.name + ".running_mean"], device=input[0].device
+                )
+                - mean,
+                2,
+            )
 
         rescale = 1.0
         self.r_feature = mean_feature + rescale * var_feature

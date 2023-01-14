@@ -1,19 +1,10 @@
-# Copyright 2020 - 2021 MONAI Consortium
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#     http://www.apache.org/licenses/LICENSE-2.0
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+# Copyright (C) 2023 NVIDIA Corporation. All rights reserved.
 
 import torch
-
 from monai.utils import optional_import
 
 models, _ = optional_import("torchvision.models")
+
 
 class TorchVisionClassificationModel(torch.nn.Module):
     """
@@ -31,21 +22,32 @@ class TorchVisionClassificationModel(torch.nn.Module):
         model_name: str = "resnet18",
         num_classes: int = 1,
         pretrained: bool = False,
-        bias=True
+        bias=True,
     ):
         super().__init__()
         self.model = getattr(models, model_name)(pretrained=pretrained)
         if "fc" in dir(self.model):
-            self.model.fc = torch.nn.Linear(in_features=self.model.fc.in_features,
-                                            out_features=num_classes, bias=bias)
+            self.model.fc = torch.nn.Linear(
+                in_features=self.model.fc.in_features,
+                out_features=num_classes,
+                bias=bias,
+            )
         elif "classifier" in dir(self.model) and "vgg" not in model_name:
-            self.model.classifier = torch.nn.Linear(in_features=self.model.classifier.in_features,
-                                                    out_features=num_classes, bias=bias)
+            self.model.classifier = torch.nn.Linear(
+                in_features=self.model.classifier.in_features,
+                out_features=num_classes,
+                bias=bias,
+            )
         elif "vgg" in model_name:
-            self.model.classifier[-1] = torch.nn.Linear(in_features=self.model.classifier[-1].in_features,
-                                                        out_features=num_classes, bias=bias)
+            self.model.classifier[-1] = torch.nn.Linear(
+                in_features=self.model.classifier[-1].in_features,
+                out_features=num_classes,
+                bias=bias,
+            )
         else:
-            raise ValueError(f"Model ['{model_name}'] does not have a supported classifier attribute.")
+            raise ValueError(
+                f"Model ['{model_name}'] does not have a supported classifier attribute."
+            )
 
     def forward(self, x):
         return self.model(x)
