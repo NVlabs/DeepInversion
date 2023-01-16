@@ -74,7 +74,7 @@ BibTeX
 ```
 @article{hatamizadeh2022gradient,
   title={Do Gradient Inversion Attacks Make Federated Learning Unsafe?},
-  author={Hatamizadeh, Ali and Yin, Hongxu and Molchanov, Pavlo and Myronenko, Andriy and Li, Wenqi and Dogra, Prerna and Feng, Andrew and Flores, Mona G and Kautz, Jan and Xu, Daguang and others},
+  author={Hatamizadeh, Ali and Yin, Hongxu and Molchanov, Pavlo and Myronenko, Andriy and Li, Wenqi and Dogra, Prerna and Feng, Andrew and Flores, Mona G and Kautz, Jan and Xu, Daguang and Roth, Holger R},
   journal={arXiv preprint arXiv:2202.06924},
   year={2022}
 }
