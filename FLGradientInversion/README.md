@@ -71,16 +71,19 @@ training set sizes, several images will be reconstructed. See the
 
 ## Citation
 
-> Hatamizadeh A, Yin H, Molchanov P, Myronenko A, Li W, Dogra P, Feng A, Flores MG, Kautz J, Xu D, Roth HR. Do Gradient Inversion Attacks Make Federated Learning Unsafe?. arXiv preprint arXiv:2202.06924. 2022 Feb 14.
+> A. Hatamizadeh et al., "Do Gradient Inversion Attacks Make Federated Learning Unsafe?," in IEEE Transactions on Medical Imaging, doi: 10.1109/TMI.2023.3239391.
 
 BibTeX
 ```
-@article{hatamizadeh2022gradient,
-  title={Do Gradient Inversion Attacks Make Federated Learning Unsafe?},
-  author={Hatamizadeh, Ali and Yin, Hongxu and Molchanov, Pavlo and Myronenko, Andriy and Li, Wenqi and Dogra, Prerna and Feng, Andrew and Flores, Mona G and Kautz, Jan and Xu, Daguang and others},
-  journal={arXiv preprint arXiv:2202.06924},
-  year={2022}
-}
+@ARTICLE{10025466,
+  author={Hatamizadeh, Ali and Yin, Hongxu and Molchanov, Pavlo and Myronenko, Andriy and Li, Wenqi and Dogra, Prerna and Feng, Andrew and Flores, Mona G. and Kautz, Jan and Xu, Daguang and Roth, Holger R.},
+  journal={IEEE Transactions on Medical Imaging}, 
+  title={Do Gradient Inversion Attacks Make Federated Learning Unsafe?}, 
+  year={2023},
+  volume={},
+  number={},
+  pages={1-1},
+  doi={10.1109/TMI.2023.3239391}}
 ```
 
 ## License
