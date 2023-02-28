@@ -22,6 +22,7 @@ import torch
 import torchvision.utils as vutils
 from PIL import Image
 import numpy as np
+import sys
 
 from utils.utils import lr_cosine_policy, lr_policy, beta_policy, mom_cosine_policy, clip, denormalize, create_folder
 
@@ -33,19 +34,26 @@ class DeepInversionFeatureHook():
     '''
     def __init__(self, module):
         self.hook = module.register_forward_hook(self.hook_fn)
+        
+        self.r_feature_glob = {}
 
     def hook_fn(self, module, input, output):
         # hook co compute deepinversion's feature distribution regularization
         nch = input[0].shape[1]
         mean = input[0].mean([0, 2, 3])
         var = input[0].permute(1, 0, 2, 3).contiguous().view([nch, -1]).var(1, unbiased=False)
-
+        
         #forcing mean and variance to match between two distributions
         #other ways might work better, i.g. KL divergence
+        
+        # single-gpu
         r_feature = torch.norm(module.running_var.data - var, 2) + torch.norm(
             module.running_mean.data - mean, 2)
-
         self.r_feature = r_feature
+        
+        # multi-gpu
+        self.r_feature_glob[r_feature.device] = r_feature
+        
         # must have no output
 
     def close(self):
@@ -76,7 +84,8 @@ class DeepInversionClass(object):
                  criterion=None,
                  coefficients=dict(),
                  network_output_function=lambda x: x,
-                 hook_for_display = None):
+                 hook_for_display = None,
+                 gpus=[i for i in range(torch.cuda.device_count())]):
         '''
         :param bs: batch size per GPU for image generation
         :param use_fp16: use FP16 (or APEX AMP) for model inversion, uses less memory and is faster for GPUs with Tensor Cores
@@ -105,13 +114,14 @@ class DeepInversionClass(object):
             "adi_scale" - coefficient for Adaptive DeepInversion, competition, def =0 means no competition
         network_output_function: function to be applied to the output of the network to get the output
         hook_for_display: function to be executed at every print/save call, useful to check accuracy of verifier
+        gpus: list containing the ids of the gpus to be used
         '''
 
         print("Deep inversion class generation")
         # for reproducibility
         torch.manual_seed(torch.cuda.current_device())
+        self.gpus = gpus
 
-        self.net_teacher = net_teacher
 
         if "resolution" in parameters.keys():
             self.image_resolution = parameters["resolution"]
@@ -168,13 +178,15 @@ class DeepInversionClass(object):
         ## Create hooks for feature statistics
         self.loss_r_feature_layers = []
 
-        for module in self.net_teacher.modules():
+        for module in net_teacher.modules():
             if isinstance(module, nn.BatchNorm2d):
                 self.loss_r_feature_layers.append(DeepInversionFeatureHook(module))
 
         self.hook_for_display = None
         if hook_for_display is not None:
             self.hook_for_display = hook_for_display
+            
+        self.net_teacher = torch.nn.DataParallel(net_teacher, device_ids=self.gpus)
 
     def get_images(self, net_student=None, targets=None):
         print("get_images call")
@@ -204,8 +216,7 @@ class DeepInversionClass(object):
         img_original = self.image_resolution
 
         data_type = torch.half if use_fp16 else torch.float
-        inputs = torch.randn((self.bs, 3, img_original, img_original), requires_grad=True, device='cuda',
-                             dtype=data_type)
+        inputs = torch.randn((self.bs, 3, img_original, img_original), requires_grad=True, device='cuda', dtype=data_type)
         pooling_function = nn.modules.pooling.AvgPool2d(kernel_size=2)
 
         if self.setting_id==0:
@@ -271,7 +282,7 @@ class DeepInversionClass(object):
                 # forward pass
                 optimizer.zero_grad()
                 net_teacher.zero_grad()
-
+                
                 outputs = net_teacher(inputs_jit)
                 outputs = self.network_output_function(outputs)
 
@@ -280,10 +291,20 @@ class DeepInversionClass(object):
 
                 # R_prior losses
                 loss_var_l1, loss_var_l2 = get_image_prior_losses(inputs_jit)
-
+                           
                 # R_feature loss
                 rescale = [self.first_bn_multiplier] + [1. for _ in range(len(self.loss_r_feature_layers)-1)]
-                loss_r_feature = sum([mod.r_feature * rescale[idx] for (idx, mod) in enumerate(self.loss_r_feature_layers)])
+                    
+                loss_r_feature = 0
+                for idx,layer in enumerate(self.loss_r_feature_layers):
+                    l_g = layer.r_feature_glob
+                    r_feature_layer_loss = []
+                    for value in l_g.values():
+                        r_feature_layer_loss.append(value.to('cuda') * rescale[idx])
+                    r_feature_layer_loss = sum(r_feature_layer_loss)
+                    loss_r_feature = loss_r_feature + r_feature_layer_loss
+                
+                
 
                 # R_ADI
                 loss_verifier_cig = torch.zeros(1)
@@ -316,7 +337,7 @@ class DeepInversionClass(object):
 
                 # l2 loss on images
                 loss_l2 = torch.norm(inputs_jit.view(self.bs, -1), dim=1).mean()
-
+                
                 # combining losses
                 loss_aux = self.var_scale_l2 * loss_var_l2 + \
                            self.var_scale_l1 * loss_var_l1 + \
@@ -399,6 +420,7 @@ class DeepInversionClass(object):
         # fix net_student
         if not (net_student is None):
             net_student = net_student.eval()
+            net_student = torch.DataParallel(net_student, device_ids=[i for i in range(self.gpus)])
 
         if targets is not None:
             targets = torch.from_numpy(np.array(targets).squeeze()).cuda()

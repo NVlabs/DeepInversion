@@ -168,7 +168,8 @@ def run(args):
                                              criterion=criterion,
                                              coefficients = coefficients,
                                              network_output_function = network_output_function,
-                                             hook_for_display = hook_for_display)
+                                             hook_for_display = hook_for_display,
+                                             gpus = args.gpu_ids)
     net_student=None
     if args.adi_scale != 0:
         net_student = net_verifier
@@ -186,7 +187,7 @@ def main():
     parser.add_argument('--bs', default=64, type=int, help='batch size')
     parser.add_argument('--jitter', default=30, type=int, help='batch size')
     parser.add_argument('--comment', default='', type=str, help='batch size')
-    parser.add_argument('--arch_name', default='resnet50', type=str, help='model name from torchvision or resnet50v15')
+    parser.add_argument('--arch_name', default='resnet101', type=str, help='model name from torchvision or resnet50v15')
 
     parser.add_argument('--fp16', action='store_true', help='use FP16 for optimization')
     parser.add_argument('--exp_name', type=str, default='test', help='where to store experimental data')
@@ -204,6 +205,7 @@ def main():
     parser.add_argument('--l2', type=float, default=0.00001, help='l2 loss on the image')
     parser.add_argument('--main_loss_multiplier', type=float, default=1.0, help='coefficient for the main loss in optimization')
     parser.add_argument('--store_best_images', action='store_true', help='save best images as separate files')
+    parser.add_argument('--gpu_ids', nargs='+', type=int, help='ids of gpus to be used')
 
     args = parser.parse_args()
     print(args)
